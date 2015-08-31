@@ -1,6 +1,6 @@
 # Requesting payment details from a wallet
 
-## The BIP 70 approach
+## The BIP 70 (v2) approach 
 
 This is for the use case where a user wishes to receive payment by supplying a third-party with a `PaymentRequest` as defined in BIP 70.
 
@@ -23,7 +23,18 @@ The above is just a rough guide to start a conversation.
 
 This is for the use case where one app wishes to communicate directly with another and there is no direct channel available.
 
-bitcoin:?req-addressrequest=myscheme://myaction
+bitcoin:?req-addressrequest=myscheme://myaction[&message=<message>][&req-network=<main|test>]
 
-e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice
-  
+e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM
+-secret is to prevent frontrunning attack (double use)
+-uri is used for server to know which user to set it for.
+
+### format of the return: 
+''myscheme://myaction&address=<bip21_returnURI>''
+
+e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN
+-bip21 return uri used instead of raw address to tell server the coin type
+
+address list can be implemented with a & separation in the bip21_returnURI:
+e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgW
+
