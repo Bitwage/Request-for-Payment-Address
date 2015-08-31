@@ -22,3 +22,8 @@ The above is just a rough guide to start a conversation.
 ## The URI approach
 
 This is for the use case where one app wishes to communicate directly with another and there is no direct channel available.
+
+bitcoin:?req-addressrequest=myscheme://myaction
+
+e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice
+  
