@@ -17,7 +17,29 @@ Proposed sequence
 9. Payer issues `Payment` containing the transaction (or zero bytes if not present)
 10. Wallet POSTs `PaymentACK` to indicate end of conversation
 
-The above is just a rough guide to start a conversation. 
+The above is just a rough guide to start a conversation.
+
+
+### Security implications
+
+There is no way for the user wallet to authenticate itself to the service i.e. the service cannot know if the wallet that contacted it belongs to the user.
+
+A scenario to illustrate this problem:
+
+- Alice wants to add a withdraw address to her online exchage
+- The exchage website presents her a QR code that uses this BIP70 extension
+- Mallory, that stands behind Alice, scans the QR code and contacts the exchange before Alice
+- Alice sees a success message in the exchage interface and (probably) an error in the wallet
+- Not giving it a second thought she clicks withdraw and the coins go to Mallory
+
+
+Some solutions are:
+
+- The wallet could generate a PIN number that the user should provice to the service. The service then contacts the wallet with the PIN and the wallet replies with the address. The downsides of this approach are that the service has to have a way of accepting the user input and that it requires the service to contact the wallet (not possible in stateless HTTP)
+- The user manually checks their address. This has a bad usability and questionable security.
+- The user pre-authenticates the wallet to the service, like providing the first address and the subsequent BIP70 calls are signed with it. This method does not allow one-off payments and is complicated to setup.
+
+
 
 ## The URI approach
 
@@ -38,3 +60,7 @@ e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&addres
 address list can be implemented with a & separation in the bip21_returnURI:
 e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgW
 
+
+### Security implications
+
+Similar to the BIP 70 (v2) approach above.
