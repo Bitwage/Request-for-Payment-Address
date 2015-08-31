@@ -29,7 +29,7 @@ e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice&secret=ocVGmg5GQ
 > secret is to prevent frontrunning attack (double use)
 > uri is used for server to know which user to set it for.
 
-### format of the return: 
+#### addressrequest GET from wallet to address requester: 
 ``myscheme://myaction&address=<bip21_returnURI>``
 
 e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN
