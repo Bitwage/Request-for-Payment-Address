@@ -40,62 +40,10 @@ Some solutions are:
 - The user pre-authenticates the wallet to the service, like providing the first address and the subsequent BIP70 calls are signed with it. This method does not allow one-off payments and is complicated to setup.
 
 
-
-## The URI approach
-
-This is for the use case where one app wishes to communicate directly with another and there is no direct channel available.
-
-``bitcoin:?req-addressrequest=myscheme://myaction[&message=<message>][&req-network=<main|test>]``
-
-e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM
-> secret is to prevent frontrunning attack (double use)
-> uri is used for server to know which user to set it for.
-
-### EDITS
-- bitcoin:  ->  bitcoin-ret: for user experience on unsupported wallets
-- x-cancel- dont trust anything at all so dont want to go to that url - seems fine
-- aaron- useability?  -leave x-error
-- so: &x-success=
-- &x-error=
-- &x-source=Foldapp
-- &category=Expense%3ACoffee
-
-- ``bitcoin-ret://x-callback-url/request-address?``
-
-##### for multiple currencies:
-- bitcoin-ret changed to litecoin-ret
-- request-address to request-litecoin-address
-
-##### additional params:
-- &default = 1
-- &max-number =  (as many as it can but cannot exceed)
-- and 0 is as many and no limit
-- show me used?
-
-#### addressrequest GET from wallet to address requester: 
-``myscheme://myaction&address=<bip21_returnURI>``
-
-e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN
-> bip21 return uri used instead of raw address to tell server the coin type
-
-address list can be implemented with a & separation in the bip21_returnURI:
-e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgW
-
-### EDITS
-multiple key value pairs- same key name (address) and different values
-- e.g.: &address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS
-- &x-source=wallet
-
-### Security implications
-
-Similar to the BIP 70 (v2) approach above.
-
-------------------
+# Request for Payment Address via URI Approach
 
 Copied from "Request for Payment Address" by Tim Horton (tim@airbitz.co)
 Modified by Paul Puey (paul@airbitz.co) per 2015-08-31 meeting with John Lindsay & Aaron Voisine
-
-# Request for Payment Address
 
 ## Motivation
 
@@ -146,9 +94,11 @@ request-uri = `bitcoin-ret://x-callback-url/request-address?` params
 
 `x-cancel = "x-cancel=" x-cancel-uri (DO NOT USE. Some security implications)`
 
+`network = "network=" [main|test]` `main` is assumed if `network=` is omitted and therefore `network=test` should be the only option ever used.
+
 `max-number = "max-number=" maximum number of addresses to return to Payer`
 
-`max-number` is never guaranteed to be returned to Payer but Payee will not exceed `max-number` of addresses to be returned. If omitted, `max-number=1` is assumed. If `max-number=0`, wallet should return as many addresses as it can comfortably handle.
+`max-number` is never guaranteed to be returned to Payer but Payee will not exceed `max-number` of addresses to be returned. If omitted, `max-number=1` is assumed. If `max-number=0`, wallet should return as many addresses as it can comfortably handle. Wallet should always return at minimum one address regardless of `max-number` value.
 
 #### Payee:
 
