@@ -1,46 +1,4 @@
-# Requesting payment details from a wallet
-
-## The BIP 70 (v2) approach 
-
-This is for the use case where a user wishes to receive payment by supplying a third-party with a `PaymentRequest` as defined in BIP 70.
-
-Proposed sequence
-
-1. Payer (e.g. BitWage) creates a link on a website following the BIP 72 URI scheme and informs user: bitcoin:?r=https://example.com/users/abc123
-2. User clicks on the link which triggers a wallet launch through standard protocol handlers in the browser
-3. Wallet issues a GET request against the `r` link
-4. Payer responds with a `PaymentRequest` marked as Version 2 and containing an optional BIP 70 extension field which is a `PaymentRequestSpecification` 
-5. Wallet decodes the `PaymentRequestSpecification` to extract salient details (amount to be paid, maximum number of outputs, expiry time, signed with particular Bitcoin address, callback URL etc)
-6. Wallet constructs a `PaymentRequest` in accordance with the `PaymentRequestSpecification` and POSTs it to the callback URL
-7. Payer decodes the `PaymentRequest` and verifies it matches the `PaymentRequestSpecification`
-8. Payer optionally creates a Bitcoin transaction to meet payment if occurring immediately
-9. Payer issues `Payment` containing the transaction (or zero bytes if not present)
-10. Wallet POSTs `PaymentACK` to indicate end of conversation
-
-The above is just a rough guide to start a conversation.
-
-
-### Security implications
-
-There is no way for the user wallet to authenticate itself to the service i.e. the service cannot know if the wallet that contacted it belongs to the user.
-
-A scenario to illustrate this problem:
-
-- Alice wants to add a withdraw address to her online exchage
-- The exchage website presents her a QR code that uses this BIP70 extension
-- Mallory, that stands behind Alice, scans the QR code and contacts the exchange before Alice
-- Alice sees a success message in the exchage interface and (probably) an error in the wallet
-- Not giving it a second thought she clicks withdraw and the coins go to Mallory
-
-
-Some solutions are:
-
-- The wallet could generate a PIN number that the user should provice to the service. The service then contacts the wallet with the PIN and the wallet replies with the address. The downsides of this approach are that the service has to have a way of accepting the user input and that it requires the service to contact the wallet (not possible in stateless HTTP)
-- The user manually checks their address. This has a bad usability and questionable security.
-- The user pre-authenticates the wallet to the service, like providing the first address and the subsequent BIP70 calls are signed with it. This method does not allow one-off payments and is complicated to setup.
-
-
-# Request for Payment Address via URI Approach
+# Request for Payment Address (v1 URI Approach)
 
 Copied from "Request for Payment Address" by Tim Horton (tim@airbitz.co)
 Modified by Paul Puey (paul@airbitz.co) per 2015-08-31 meeting with John Lindsay & Aaron Voisine
@@ -129,10 +87,15 @@ Error: `https://bitwage.co/user/123/error`
 #### 2. Payer issues a request for a payment address via a `bitcoin-ret:` URI encoding the return URIs. Additional params are included with the URI, in this case `x-source=` and `category=`.
 
   `bitcoin-ret://x-callback-url/request-address`
+  
     `?x-success=https%3A%2F%2Fbitwage.co%2Fuser%2F123`
+  
     `&x-error=https%3A%2F%2Fbitwage.co%2Fuser%2F123%2ferror`
+  
     `&x-source=Bit%20Wage`
+  
     `&max-number=2`
+  
     `&category=Income%3ASalary`
 
 #### 3. Payee receives the `bitcoin-ret:` with action of `request-address` and generates two payment address: 
@@ -153,6 +116,7 @@ includes a `x­source=` parameter back to the payer.
 
 #### 1. Payer creates a return URI
   Success: `foldapp:request?id=42`
+  
   Error: `foldapp:request/error`
 
 #### 2. Payer issues a request for a payment address via a `bitcoin-ret:` URI, encoding the return URIs.
@@ -182,4 +146,48 @@ includes a `x­source=` parameter back to the payer.
   `&address=bitcoin%3A1V8h9kUDXtBEtWwcWRqd5s9A5pxjjdTFy%26label%3DNakamoto`
 
 6. Payee Now can now handle the return URI and extract the payment address via the `address=` parameter
+
+
+--------------------------------------------
+--------------------------------------------
+
+## The BIP 70 (v2) approach 
+
+This is for the use case where a user wishes to receive payment by supplying a third-party with a `PaymentRequest` as defined in BIP 70.
+
+Proposed sequence
+
+1. Payer (e.g. BitWage) creates a link on a website following the BIP 72 URI scheme and informs user: bitcoin:?r=https://example.com/users/abc123
+2. User clicks on the link which triggers a wallet launch through standard protocol handlers in the browser
+3. Wallet issues a GET request against the `r` link
+4. Payer responds with a `PaymentRequest` marked as Version 2 and containing an optional BIP 70 extension field which is a `PaymentRequestSpecification` 
+5. Wallet decodes the `PaymentRequestSpecification` to extract salient details (amount to be paid, maximum number of outputs, expiry time, signed with particular Bitcoin address, callback URL etc)
+6. Wallet constructs a `PaymentRequest` in accordance with the `PaymentRequestSpecification` and POSTs it to the callback URL
+7. Payer decodes the `PaymentRequest` and verifies it matches the `PaymentRequestSpecification`
+8. Payer optionally creates a Bitcoin transaction to meet payment if occurring immediately
+9. Payer issues `Payment` containing the transaction (or zero bytes if not present)
+10. Wallet POSTs `PaymentACK` to indicate end of conversation
+
+The above is just a rough guide to start a conversation.
+
+
+### Security implications
+
+There is no way for the user wallet to authenticate itself to the service i.e. the service cannot know if the wallet that contacted it belongs to the user.
+
+A scenario to illustrate this problem:
+
+- Alice wants to add a withdraw address to her online exchage
+- The exchage website presents her a QR code that uses this BIP70 extension
+- Mallory, that stands behind Alice, scans the QR code and contacts the exchange before Alice
+- Alice sees a success message in the exchage interface and (probably) an error in the wallet
+- Not giving it a second thought she clicks withdraw and the coins go to Mallory
+
+
+Some solutions are:
+
+- The wallet could generate a PIN number that the user should provice to the service. The service then contacts the wallet with the PIN and the wallet replies with the address. The downsides of this approach are that the service has to have a way of accepting the user input and that it requires the service to contact the wallet (not possible in stateless HTTP)
+- The user manually checks their address. This has a bad usability and questionable security.
+- The user pre-authenticates the wallet to the service, like providing the first address and the subsequent BIP70 calls are signed with it. This method does not allow one-off payments and is complicated to setup.
+
 
