@@ -1,3 +1,6 @@
+(Notice: Both the URI and the BIP70 methods have a security vulnerability. For more information check issue [#1](https://github.com/Bitwage/address_request/issues/1))
+
+
 # Request for Payment Address (v1 URI Approach)
 
 Copied from "Request for Payment Address" by Tim Horton (tim@airbitz.co)
@@ -151,7 +154,7 @@ includes a `x­source=` parameter back to the payer.
 --------------------------------------------
 --------------------------------------------
 
-## The BIP 70 (v2) approach 
+# The BIP 70 (v2) approach 
 
 This is for the use case where a user wishes to receive payment by supplying a third-party with a `PaymentRequest` as defined in BIP 70.
 
@@ -170,24 +173,5 @@ Proposed sequence
 
 The above is just a rough guide to start a conversation.
 
-
-### Security implications
-
-There is no way for the user wallet to authenticate itself to the service i.e. the service cannot know if the wallet that contacted it belongs to the user.
-
-A scenario to illustrate this problem:
-
-- Alice wants to add a withdraw address to her online exchage
-- The exchage website presents her a QR code that uses this BIP70 extension
-- Mallory, that stands behind Alice, scans the QR code and contacts the exchange before Alice
-- Alice sees a success message in the exchage interface and (probably) an error in the wallet
-- Not giving it a second thought she clicks withdraw and the coins go to Mallory
-
-
-Some solutions are:
-
-- The wallet could generate a PIN number that the user should provice to the service. The service then contacts the wallet with the PIN and the wallet replies with the address. The downsides of this approach are that the service has to have a way of accepting the user input and that it requires the service to contact the wallet (not possible in stateless HTTP)
-- The user manually checks their address. This has a bad usability and questionable security.
-- The user pre-authenticates the wallet to the service, like providing the first address and the subsequent BIP70 calls are signed with it. This method does not allow one-off payments and is complicated to setup.
 
 
