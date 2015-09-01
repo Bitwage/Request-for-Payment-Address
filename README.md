@@ -162,8 +162,6 @@ includes a `x­source=` parameter back to the payer.
 
   `&x-error=foldapp%3Arequest%2Ferror`
 
-  `&x-cancel=foldapp%3Arequest%2Fcancel`
-
   `&x-source=Foldapp`
 
   `&category=Expense%3ACoffee`
