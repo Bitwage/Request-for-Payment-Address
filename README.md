@@ -51,27 +51,26 @@ e.g. bitcoin:?req-addressrequest=https://bitwage.com/user/alice&secret=ocVGmg5GQ
 > secret is to prevent frontrunning attack (double use)
 > uri is used for server to know which user to set it for.
 
-EDITS
-bitcoin:  ->  bitcoin-ret: for user experience on unsupported wallets
-x-cancel- dont trust anything at all so dont want to go to that url - seems fine
-aaron- useability?  -leave x-error
-so:
-&x-success=
-&x-error=
-&x-source=Foldapp
-&category=Expense%3ACoffee
+### EDITS
+- bitcoin:  ->  bitcoin-ret: for user experience on unsupported wallets
+- x-cancel- dont trust anything at all so dont want to go to that url - seems fine
+- aaron- useability?  -leave x-error
+- so: &x-success=
+- &x-error=
+- &x-source=Foldapp
+- &category=Expense%3ACoffee
 
-bitcoin-ret://x-callback-url/request-address?
+- ``bitcoin-ret://x-callback-url/request-address?``
 
-for multiple currencies:
-bitcoin-ret changed to litecoin-ret
-request-address to request-litecoin-address
+##### for multiple currencies:
+- bitcoin-ret changed to litecoin-ret
+- request-address to request-litecoin-address
 
-&default = 1
-&max-number =  (as many as it can but cannot exceed)
-and 0 is as many and i dont care
-
-show me used?
+##### additional params:
+- &default = 1
+- &max-number =  (as many as it can but cannot exceed)
+- and 0 is as many and no limit
+- show me used?
 
 #### addressrequest GET from wallet to address requester: 
 ``myscheme://myaction&address=<bip21_returnURI>``
@@ -82,11 +81,10 @@ e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&addres
 address list can be implemented with a & separation in the bip21_returnURI:
 e.g. https://bitwage.com/user/alice&secret=ocVGmg5GQlCxkYKpppNSJLp0zVAvzM&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS&3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgW
 
-EDITS
+### EDITS
 multiple key value pairs- same key name (address) and different values
-e.g.: &address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS
-
-&x-source=wallet
+- e.g.: &address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgN&address=litecoin:3LgUNDLAnw2hHocP7ApPLfGmqXnjwaVDgS
+- &x-source=wallet
 
 ### Security implications
 
